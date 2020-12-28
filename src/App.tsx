@@ -12,6 +12,7 @@ function App() {
   const currentStroke = useSelector(currentStrokeSelector);
 
   //double excalimation to cast value into boolean
+  //currentStroke.points is set only if mouseDown is fired (we click)
   const isDrawing = !!currentStroke.points.length;
 
   const getCanvasWithContext = () => {
@@ -41,12 +42,18 @@ function App() {
   };
 
   const endDrawing = () => {
+    //if we are not drawing then we end the stroke
     if (isDrawing) {
-      dispatch(endStroke);
+      dispatch(endStroke());
     }
   };
 
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
+      //currentStroke.points is set only if mouseDown is fired (we click)
+      //so we never draw (mousemove) before we click to draw (onMouseDown)
+    if (!isDrawing) {
+      return
+    }
     const { offsetX, offsetY } = nativeEvent;
     dispatch(updateStroke(offsetX, offsetY));
   };
