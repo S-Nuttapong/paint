@@ -48,7 +48,7 @@ function App() {
   }: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent;
     //equivalent to dispatch({type: "BEGIN_STROKE", payload: {offsetX, offsetY}})
-    dispatch(beginStroke(offsetX, offsetY));
+    dispatch(beginStroke({x: offsetX, y: offsetY}));
   };
 
   const endDrawing = () => {
@@ -65,7 +65,7 @@ function App() {
       return;
     }
     const { offsetX, offsetY } = nativeEvent;
-    dispatch(updateStroke(offsetX, offsetY));
+    dispatch(updateStroke({x:offsetX, y:offsetY}));
   };
 
   return (

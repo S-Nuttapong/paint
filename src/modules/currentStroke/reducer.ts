@@ -1,6 +1,7 @@
 import { RootState } from "../../type";
+import { createReducer } from "@reduxjs/toolkit";
+import { beginStroke, updateStroke, endStroke } from "./action";
 
-import { currentStrokeAction } from "./action";
 
 type currentStrokeState = RootState["currentStroke"];
 
@@ -9,34 +10,46 @@ const initialState: currentStrokeState = {
   color: "black",
 };
 
-export const reducer = (
-  state: currentStrokeState = initialState,
-  action: currentStrokeAction
-): currentStrokeState => {
-  switch (action.type) {
-    case "BEGIN_STROKE": {
-      return {
-        ...state,
-        points: [action.payload],
-      };
-    }
+export const reducer = createReducer(initialState, (builder) => {
+  builder.addCase(beginStroke, (state, action) => {
+    state.points = [action.payload]
+  })
+  builder.addCase(updateStroke, (state, action) => {
+    state.points = state.points.concat(action.payload)
+  })
+  builder.addCase(endStroke, (state, action) => {
+    state.points = []
+  })
+})
 
-    case "UPDATE_STROKE": {
-      return {
-        ...state,
-        points: [...state.points, action.payload],
-      };
-    }
+// export const reducer = (
+//   state: currentStrokeState = initialState,
+//   action: currentStrokeAction
+// ): currentStrokeState => {
+//   switch (action.type) {
+//     case "BEGIN_STROKE": {
+//       return {
+//         ...state,
+//         points: [action.payload],
+//       };
+//     }
 
-    case "END_STROKE": {
-      return {
-        ...state,
-        points: [],
-      };
-    }
+//     case "UPDATE_STROKE": {
+//       return {
+//         ...state,
+//         points: [...state.points, action.payload],
+//       };
+//     }
 
-    default: {
-      return state;
-    }
-  }
-};
+//     case "END_STROKE": {
+//       return {
+//         ...state,
+//         points: [],
+//       };
+//     }
+
+//     default: {
+//       return state;
+//     }
+//   }
+// };
