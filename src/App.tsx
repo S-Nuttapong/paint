@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import { currentStrokeSelector } from "./selectors";
+import { currentStrokeSelecotr } from "./modules/currentStroke/selector";
 import { useSelector, useDispatch } from "react-redux";
-import { beginStroke, updateStroke, endStroke } from "./actions";
+import { beginStroke, updateStroke, endStroke } from "./modules/currentStroke/action";
 import { drawStroke } from "./canvasUtils";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
 
   //useSelector: useEffect/watch function to observe and render when state of our interest is changed
   //our component will be re-rendered everytime currentStroke updated
-  const currentStroke = useSelector(currentStrokeSelector);
+  const currentStroke = useSelector(currentStrokeSelecotr);
 
   //double excalimation to cast value into boolean
   //currentStroke.points is set only if mouseDown is fired (we click)
@@ -19,6 +19,16 @@ function App() {
     const canvas = canvasRef.current;
     return { canvas, context: canvas?.getContext("2d") };
   };
+
+  useEffect(() => {
+    const { canvas } = getCanvasWithContext();
+
+    if (canvas) {
+      canvas.width = window.innerWidth / 2;
+      canvas.height = window.innerHeight / 2;
+    }
+    
+  }, []);
 
   useEffect(() => {
     const { context } = getCanvasWithContext();
@@ -42,17 +52,17 @@ function App() {
   };
 
   const endDrawing = () => {
-    //if we are not drawing then we end the stroke
+    //if we draw thing at all then we can endStroke onMouseUp
     if (isDrawing) {
-      dispatch(endStroke());
+      dispatch(endStroke(currentStroke));
     }
   };
 
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
-      //currentStroke.points is set only if mouseDown is fired (we click)
-      //so we never draw (mousemove) before we click to draw (onMouseDown)
+    //currentStroke.points is set only if mouseDown is fired (we click)
+    //so we never draw (mousemove) before we click to draw (onMouseDown)
     if (!isDrawing) {
-      return
+      return;
     }
     const { offsetX, offsetY } = nativeEvent;
     dispatch(updateStroke(offsetX, offsetY));
@@ -60,13 +70,21 @@ function App() {
 
   return (
     //mouseUp && mouseOut: same Event support different browser
-    <canvas
-      onMouseDown={startDrawing}
-      onMouseUp={endDrawing}
-      onMouseOut={endDrawing}
-      onMouseMove={draw}
-      ref={canvasRef}
-    />
+    <div className="window full-height overflow-hidden">
+      <div className="title-bar">
+        <div className="title-bar-text">Redux Paint</div>
+        <div className="title-bar-controls">
+          <button aria-label="Close" />
+        </div>
+      </div>
+      <canvas
+        onMouseDown={startDrawing}
+        onMouseUp={endDrawing}
+        onMouseOut={endDrawing}
+        onMouseMove={draw}
+        ref={canvasRef}
+      />
+    </div>
   );
 }
 
