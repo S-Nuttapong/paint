@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import { currentStrokeSelecotr } from "./modules/currentStroke/selector";
 import { useSelector, useDispatch } from "react-redux";
-import { beginStroke, updateStroke, endStroke } from "./modules/currentStroke/action";
+import { beginStroke, updateStroke } from "./modules/currentStroke/slice";
+import { endStroke } from "./modules/shared/sharedAction";
 import { drawStroke } from "./canvasUtils";
 
 function App() {
@@ -27,7 +28,6 @@ function App() {
       canvas.width = window.innerWidth / 2;
       canvas.height = window.innerHeight / 2;
     }
-    
   }, []);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function App() {
   }: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent;
     //equivalent to dispatch({type: "BEGIN_STROKE", payload: {offsetX, offsetY}})
-    dispatch(beginStroke({x: offsetX, y: offsetY}));
+    dispatch(beginStroke({ x: offsetX, y: offsetY }));
   };
 
   const endDrawing = () => {
@@ -65,7 +65,7 @@ function App() {
       return;
     }
     const { offsetX, offsetY } = nativeEvent;
-    dispatch(updateStroke({x:offsetX, y:offsetY}));
+    dispatch(updateStroke({ x: offsetX, y: offsetY }));
   };
 
   return (

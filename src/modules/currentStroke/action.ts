@@ -1,4 +1,4 @@
-import { RootState, Point } from "../../type";
+import { RootState, Point, Stroke } from "../../type";
 import { createAction } from "@reduxjs/toolkit";
 
 const BEGIN_DRAWING = "BEGIN_STROKE";
@@ -8,7 +8,7 @@ const END_STROKE = "END_STROKE";
 export type currentStrokeAction =
   | { type: typeof BEGIN_DRAWING; payload: Point }
   | { type: typeof UPDATE_STROKE; payload: Point }
-  | { type: typeof END_STROKE; payload: RootState["currentStroke"] };
+  | { type: typeof END_STROKE; payload: Stroke };
 
 // export const beginStroke = (x: number, y: number) => ({
 // type: BEGIN_DRAWING,
@@ -28,9 +28,9 @@ export const beginStroke = createAction<Point>("BEGIN_STROKE");
 //pros: more declarative  
 export const updateStroke = createAction<Point>("UPDATE_STROK")
 
-// export const endStroke = (currentStroke: RootState["currentStroke"]) => ({
+
+// export const endStroke = (currentStroke: Stroke) => ({
   // type: END_STROKE,
   // payload: currentS`troke,
 // });`
-
-export const endStroke = createAction<RootState["currentStroke"]>("END_STROKE")
+export const endStroke = createAction<Stroke>("END_STROKE")
